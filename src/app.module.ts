@@ -1,4 +1,6 @@
+import './config/load-env';
 import { Module, ValidationPipe } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { randomUUID } from 'node:crypto';
 import { LoggerModule } from 'nestjs-pino';
@@ -10,6 +12,7 @@ import { TransfersModule } from './transfers/transfers.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     LoggerModule.forRoot({
       pinoHttp: {
         level: process.env.LOG_LEVEL ?? 'info',

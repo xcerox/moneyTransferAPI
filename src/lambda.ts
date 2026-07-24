@@ -1,3 +1,4 @@
+import './config/load-env';
 import serverlessExpress from '@codegenie/serverless-express';
 import {
   APIGatewayProxyEvent,
