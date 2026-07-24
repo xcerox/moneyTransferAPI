@@ -1,0 +1,38 @@
+AccountsTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: ${self:service}-accounts-${self:provider.stage}
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: accountId
+        AttributeType: S
+    KeySchema:
+      - AttributeName: accountId
+        KeyType: HASH
+
+TransfersTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: ${self:service}-transfers-${self:provider.stage}
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: transferId
+        AttributeType: S
+    KeySchema:
+      - AttributeName: transferId
+        KeyType: HASH
+
+IdempotencyTable:
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: ${self:service}-idempotency-${self:provider.stage}
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: idempotencyKey
+        AttributeType: S
+    KeySchema:
+      - AttributeName: idempotencyKey
+        KeyType: HASH
+    TimeToLiveSpecification:
+      AttributeName: expiresAt
+      Enabled: true

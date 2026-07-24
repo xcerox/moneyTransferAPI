@@ -1,0 +1,15 @@
+DynamoDBPolicies:
+  Effect: Allow
+  Action:
+    - dynamodb:GetItem
+    - dynamodb:Query
+    - dynamodb:Scan
+    - dynamodb:PutItem
+    - dynamodb:UpdateItem
+    - dynamodb:ConditionCheckItem
+    - dynamodb:TransactWriteItems
+    - dynamodb:TransactGetItems
+  Resource:
+    - Fn::GetAtt: [AccountsTable, Arn]
+    - Fn::GetAtt: [TransfersTable, Arn]
+    - Fn::GetAtt: [IdempotencyTable, Arn]

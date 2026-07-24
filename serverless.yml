@@ -1,0 +1,50 @@
+service: money-transfer-api
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-1'}
+  memorySize: 512
+  timeout: 15
+  logRetentionInDays: 14
+  environment:
+    NODE_ENV: ${self:provider.stage}
+    LOG_LEVEL: info
+    REPO_DRIVER: dynamodb
+    ACCOUNTS_TABLE_NAME: ${self:service}-accounts-${self:provider.stage}
+    TRANSFERS_TABLE_NAME: ${self:service}-transfers-${self:provider.stage}
+    IDEMPOTENCY_TABLE_NAME: ${self:service}-idempotency-${self:provider.stage}
+  iam:
+    role:
+      statements:
+        - ${file(resources/policies.yml):DynamoDBPolicies}
+
+functions:
+  api:
+    handler: dist/lambda.handler
+    events:
+      - httpApi: 'ANY /{proxy+}'
+
+package:
+  patterns:
+    - '!**'
+    - 'dist/**'
+    - 'node_modules/**'
+    - '!node_modules/.cache/**'
+
+plugins:
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3000
+    host: 0.0.0.0
+
+resources:
+  Resources:
+    AccountsTable: ${file(resources/tables.yml):AccountsTable}
+    TransfersTable: ${file(resources/tables.yml):TransfersTable}
+    IdempotencyTable: ${file(resources/tables.yml):IdempotencyTable}
